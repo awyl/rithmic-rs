@@ -108,6 +108,7 @@ impl RithmicSenderApi {
             system_name: Some(system_name.to_string()),
             infra_type: Some(infra_type.into()),
             user_msg: vec![id.clone()],
+            aggregated_quotes: Some(false),
             ..RequestLogin::default()
         };
 
