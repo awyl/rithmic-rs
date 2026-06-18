@@ -108,6 +108,7 @@ impl RithmicSenderApi {
             system_name: Some(system_name.to_string()),
             infra_type: Some(infra_type.into()),
             user_msg: vec![id.clone()],
+            aggregated_quotes: Some(false),
             ..RequestLogin::default()
         };
 
@@ -1371,7 +1372,14 @@ impl RithmicSenderApi {
                 }
                 .to_string(),
             ),
-            update_bits: None,
+            // Without this bit Rithmic never streams the auto-liquidate
+            // floor (`auto_liq_threshold_current_value`) — the subscription
+            // is silent. R|Trader sets it, which is why it shows the live
+            // trailing value.
+            update_bits: Some(
+                crate::rti::request_account_rms_updates::UpdateBits::AutoLiqThresholdCurrentValue
+                    as i32,
+            ),
         };
 
         self.request_to_buf(req, id)
